@@ -1,3 +1,13 @@
+#!/usr/bin/env bash
+
+# SURF - Fedora System Update Script
+# Upgrades dnf packages and Flatpaks, then checks whether a restart is needed.
+# Must be run as root (e.g. sudo ./surf.sh).
+
+if [ "$EUID" -ne 0 ]; then
+    echo "Error: this script must be run as root (use sudo)." >&2
+    exit 1
+fi
 
 main() {
     echo "=== Fedora System Update Script ==="
@@ -51,7 +61,13 @@ main() {
             if [ -n "$updates_available" ]; then
                 echo ""
                 echo "Starting Flatpak update..."
-                flatpak update
+                # Flatpaks installed per-user are invisible to root, so when
+                # invoked through sudo, run the update as the original user.
+                if [ -n "${SUDO_USER:-}" ]; then
+                    sudo -u "$SUDO_USER" flatpak update
+                else
+                    flatpak update
+                fi
                 flatpak_status=$?
 
                 if [ $flatpak_status -ne 0 ]; then
