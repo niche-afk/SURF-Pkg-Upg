@@ -3,8 +3,9 @@
 Fedora system update script. It:
 
 1. Refreshes dnf metadata and upgrades packages when updates are available.
-2. Updates Flatpaks (per-user Flatpaks included when run via sudo).
-3. Checks whether a reboot or service restarts are needed, and offers to reboot if required.
+2. Removes unneeded packages left behind by the upgrade.
+3. Updates per-user Flatpaks (run as your user account when invoked via sudo).
+4. Checks whether a reboot or service restarts are needed, and offers to reboot if required.
 
 ## Usage
 
@@ -28,5 +29,6 @@ sudo ./surf.sh
 ## Notes
 
 - By default the script is interactive: `dnf upgrade` and `flatpak update` prompt before proceeding, and you are asked before any reboot.
-- When run with sudo, Flatpak updates run as your user account so per-user Flatpaks are covered; system Flatpaks are covered either way.
+- Autoremove runs only after a successful upgrade, and follows `--yes` like the other steps.
+- When run with sudo, the Flatpak step runs as your user account and covers per-user Flatpaks only; system-wide Flatpaks are not updated by the script.
 - If a Flatpak update fails, the script warns and exits non-zero at the end, so automation can detect the partial failure.
