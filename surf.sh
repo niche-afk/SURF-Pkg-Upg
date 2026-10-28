@@ -99,7 +99,7 @@ main() {
             echo "Starting Flatpak update..."
             # Flatpaks installed per-user are invisible to root, so when
             # invoked through sudo, run the update as the original user.
-            flatpak_cmd=(flatpak update)
+            flatpak_cmd=(flatpak --user update)
             if [ "$ASSUME_YES" = true ]; then
                 flatpak_cmd+=(-y)
             fi
