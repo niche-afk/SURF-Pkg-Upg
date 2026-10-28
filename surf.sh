@@ -81,7 +81,20 @@ main() {
         echo ""
         echo "Package upgrade completed successfully"
         echo ""
+        echo "Removing unneeded packages..."
+        autoremove_cmd=(dnf autoremove)
+        if [ "$ASSUME_YES" = true ]; then
+        autoremove_cmd+=(-y)
+        fi
+        "${autoremove_cmd[@]}"
+        autoremove_status=$?
+
+    if [ "$autoremove_status" -ne 0 ]; then
+        echo "Warning: Failed to remove unneeded packages (exit code $autoremove_status)"
+        overall_status=1
     fi
+fi
+
 
     # Check and update Flatpaks
     echo "=== Checking for Flatpak updates ==="
